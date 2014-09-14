@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+
+  "name": "Medusa",
+  "description": "Time to bag some fedoras",
+  "version": "1.0",
+    "content_scripts": [
+        {
+        "matches": ["https://twitter.com/*"],
+        "css": [],
+        "js": ["jquery-2.1.1.min.js","medusa.js"]
+        }
+    ],
+  "browser_action": {
+    "default_icon": "no_fedoras.png"
+  }
+}
