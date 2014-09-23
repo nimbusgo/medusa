@@ -5,12 +5,43 @@ function createCORSRequest(method, url) {
     return xhr;
 }
 
+var medusaState = {
+    waiting: false
+};
+
 
 var medusaFuncs = {
 
-    main: function(){
-        var tweets = document.querySelectorAll("div.tweet");
-        for (i=0; i<tweets.length; i++){
+    init: function(){
+        medusaFuncs.queueFedoraApplication();
+        var homeStream = document.querySelector("div.home-stream");
+        if (homeStream != null) {
+            homeStream.addEventListener('DOMNodeInserted', function () {
+                medusaFuncs.queueFedoraApplication();
+            });
+        }
+        var permaLink = document.querySelector("div.permalink");
+        if (permaLink != null) {
+            permaLink.addEventListener('DOMNodeInserted', function () {
+                medusaFuncs.queueFedoraApplication();
+            });
+        }
+    },
+
+    queueFedoraApplication: function(){
+        if (!medusaState.waiting) {
+            medusaState.waiting = true;
+            setTimeout(function () {
+                medusaFuncs.applyFedorasToTweets();
+                medusaState.waiting = false;
+            }, 300);
+        }
+    },
+
+    applyFedorasToTweets: function(){
+        console.log("calling apply fedoras");
+        var tweets = document.querySelectorAll("div.tweet:not(.fedorad)");
+        for (i = 0; i < tweets.length; i++) {
             var tweet = tweets[i];
             medusaFuncs.addFedora(tweet);
         }
@@ -48,6 +79,8 @@ var medusaFuncs = {
         var firstLi = tweetAction.querySelector("li");
         tweetAction.insertBefore(listItem, firstLi);
 
+        tweet.className = tweet.className + " fedorad";
+
         return listItem;
     },
 
@@ -74,14 +107,9 @@ var medusaFuncs = {
     }
 };
 
-medusaFuncs.main();
 
-//var pageContainer = document.querySelector("div#page-container");
-//pageContainer.addEventListener('DOMNodeInserted', function () {
-//    console.log('DOMNodeInserted');
-//    console.log(event);
-//
-//});
+medusaFuncs.init();
+
 //  console.log('DOM CONTENT LOADED');
 //});
 //
